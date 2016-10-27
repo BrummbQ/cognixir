@@ -74,4 +74,34 @@ defmodule Cognixir.TextAnalytics do
                 { :error, "unknown error" }
         end
     end
+
+    @doc """
+    Tries to extract the key phrases for given text. You need to submit the language of the text, too.
+
+    ## Parameters
+
+    - text: String that will be analyzed
+    - language: language of the text (en, ja, de, es)
+
+    ## Examples
+
+    iex> Cognixir.TextAnalytics.detect_key_phrases("I'am looking for bananas. Do you have bananas?", "en")
+
+    {:ok, ["I'am", "bananas"]}
+
+    """
+    def detect_key_phrases(text, language) do
+        encoded_body = Poison.encode!(%{"documents" => [%{"id" => 1, "text" => text, "language" => language}]})
+
+        case HTTPotion.post(api_base <> "keyPhrases", [body: encoded_body, headers: header]) do
+            %HTTPotion.Response{status_code: 200, body: body} ->
+                { :ok, Poison.decode!(body)["documents"] |> hd |> Map.get("keyPhrases") }
+            %HTTPotion.Response{body: body} ->
+                { :error, body }
+            %HTTPotion.ErrorResponse{message: message} ->
+                { :error, message }
+            _ ->
+                { :error, "unknown error" }
+        end
+    end
 end

@@ -21,4 +21,11 @@ defmodule CognixirTest.TextAnalytics do
         result = Cognixir.TextAnalytics.detect_topics(document_list)
         assert elem(result, 0) === :ok
     end
+
+    test "detect key phrases" do
+        text = "I'am looking for bananas. Do you have bananas?"
+        language = "en"
+        result = Cognixir.TextAnalytics.detect_key_phrases(text, language)
+        assert result === {:ok, ["I'am", "bananas"]}
+    end
 end

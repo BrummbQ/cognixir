@@ -38,5 +38,9 @@ config :Cognixir, ta_api_key: "<your key>"
 ### Text Analytics
  * detect language [x]
  * initiate topic analysis [x]
- * key phrases []
+ * key phrases [x]
  * sentiment []
+
+## Api Documentation
+
+You can find the api documentation for published packages on [Hex Doc](https://hexdocs.pm/cognixir/api-reference.html)

@@ -32,3 +32,11 @@ Add to your config.exs:
 # api key for text analytics
 config :Cognixir, ta_api_key: "<your key>"
 ```
+
+## Implemented Features
+
+### Text Analytics
+ * detect language [x]
+ * initiate topic analysis [x]
+ * key phrases []
+ * sentiment []

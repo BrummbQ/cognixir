@@ -104,4 +104,35 @@ defmodule Cognixir.TextAnalytics do
                 { :error, "unknown error" }
         end
     end
+
+    @doc """
+    Tries to detect the sentiment for given text. Returns a score between 0 and 1. Scores close to 1 indicate positive sentiment, closer to 0 negative sentiment.
+    You need to submit the language of the text, too.
+
+    ## Parameters
+
+    - text: String that will be analyzed
+    - language: language of the text (en, ja, de, es)
+
+    ## Examples
+
+    iex> Cognixir.TextAnalytics.detect_sentiment("I'am a happy person", "en")
+
+    {:ok, 0.9599599}
+
+    """
+    def detect_sentiment(text, language) do
+        encoded_body = Poison.encode!(%{"documents" => [%{"id" => 1, "text" => text, "language" => language}]})
+
+        case HTTPotion.post(api_base <> "sentiment", [body: encoded_body, headers: header]) do
+            %HTTPotion.Response{status_code: 200, body: body} ->
+                { :ok, Poison.decode!(body)["documents"] |> hd |> Map.get("score") }
+            %HTTPotion.Response{body: body} ->
+                { :error, body }
+            %HTTPotion.ErrorResponse{message: message} ->
+                { :error, message }
+            _ ->
+                { :error, "unknown error" }
+        end
+    end
 end

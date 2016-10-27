@@ -28,4 +28,13 @@ defmodule CognixirTest.TextAnalytics do
         result = Cognixir.TextAnalytics.detect_key_phrases(text, language)
         assert result === {:ok, ["I'am", "bananas"]}
     end
+
+    test "detect sentiment" do
+        text = "I'am a happy person"
+        language = "en"
+
+        result = Cognixir.TextAnalytics.detect_sentiment(text, language)
+        assert elem(result, 0) === :ok
+        assert elem(result, 1) > 0.5
+    end
 end

@@ -38,8 +38,8 @@ config :Cognixir, ta_api_key: "<your key>"
 ### Text Analytics
  * detect language [x]
  * initiate topic analysis [x]
- * key phrases [x]
- * sentiment []
+ * detect key phrases [x]
+ * detect sentiment [x]
 
 ## Api Documentation
 

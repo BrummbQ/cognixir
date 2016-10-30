@@ -1,10 +1,22 @@
 defmodule Cognixir.ComputerVision.AnalyzeOptions do
+    @moduledoc """
+    Options for function analyze_image. See official api doc for supported options.
+
+    ## Keys
+    - visualFeatures: list of strings, comma separated
+    - details: list of strings, comma separated
+    - language: which language to return
+    """
     defstruct visualFeatures: "", details: "", language: "en"
 end
 
 defmodule Cognixir.ComputerVision.OCROptions do
     @moduledoc """
-    OCR options blabla
+    Options for function recognize_character.
+
+    ## Keys
+    - detectOrientation: toggles orientation detection
+    - language: language of the text, "unk" for auto detection
     """
     defstruct detectOrientation: false, language: "en"
 end

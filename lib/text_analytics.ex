@@ -85,7 +85,7 @@ defmodule Cognixir.TextAnalytics do
 
     iex> Cognixir.TextAnalytics.detect_key_phrases("I'am looking for bananas. Do you have bananas?", "en")
 
-    {:ok, ["I'am", "bananas"]}
+    { :ok, ["I'am", "bananas"] }
 
     """
     def detect_key_phrases(text, language) do
@@ -116,7 +116,7 @@ defmodule Cognixir.TextAnalytics do
 
     iex> Cognixir.TextAnalytics.detect_sentiment("I'am a happy person", "en")
 
-    {:ok, 0.9599599}
+    { :ok, 0.9599599 }
 
     """
     def detect_sentiment(text, language) do

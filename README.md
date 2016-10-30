@@ -31,6 +31,8 @@ Add to your config.exs:
 ```elixir
 # api key for text analytics
 config :Cognixir, ta_api_key: "<your key>"
+# api key for computer vision
+config :Cognixir, cv_api_key: "<your key>"
 ```
 
 ## Implemented Features
@@ -40,6 +42,16 @@ config :Cognixir, ta_api_key: "<your key>"
  * initiate topic analysis [x]
  * detect key phrases [x]
  * detect sentiment [x]
+
+### Computer Vision
+ * analyze image [x]
+ * describe image [x]
+ * get thumbnail []
+ * list domain specific models []
+ * OCR [x]
+ * recognize domain specific content []
+ * tag image [x]
+ * raw image upload []
 
 ## Api Documentation
 

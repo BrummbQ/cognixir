@@ -8,13 +8,21 @@ defmodule CognixirTest.ComputerVision do
         "https://portalstoragewuprod.azureedge.net/vision/Analysis/1-1.jpg"
     end
 
-    test "analyze image url with all options set" do
-        result = ComputerVision.analyze_image(image_url,
-            %ComputerVision.Options{language: "en", visualFeatures: "Faces,Color", details: "Celebrities"})
+    defp ocr_image_url do
+        "https://portalstoragewuprod.azureedge.net/vision/OpticalCharacterRecognition/1-1.jpg"
+    end
 
-        assert elem(result, 0) === :ok
+    defp test_meta(result) do
         assert result |> elem(1) |> Map.has_key?("metadata")
         assert result |> elem(1) |> Map.has_key?("requestId")
+    end
+
+    test "analyze image url with all options set" do
+        result = ComputerVision.analyze_image(image_url,
+            %ComputerVision.AnalyzeOptions{language: "en", visualFeatures: "Faces,Color", details: "Celebrities"})
+
+        assert elem(result, 0) === :ok
+        test_meta(result)
         assert result |> elem(1) |> Map.has_key?("categories")
         assert result |> elem(1) |> Map.has_key?("color")
         assert result |> elem(1) |> Map.has_key?("faces")
@@ -24,8 +32,50 @@ defmodule CognixirTest.ComputerVision do
         result = ComputerVision.analyze_image(image_url)
 
         assert elem(result, 0) === :ok
-        assert result |> elem(1) |> Map.has_key?("metadata")
-        assert result |> elem(1) |> Map.has_key?("requestId")
+        test_meta(result)
         assert result |> elem(1) |> Map.has_key?("categories")
+    end
+
+    test "describe image with max 3 descriptions" do
+        result = ComputerVision.describe_image(image_url, 3)
+
+        assert elem(result, 0) === :ok
+        test_meta(result)
+        assert result |> elem(1) |> Map.has_key?("description")
+        assert result |> elem(1) |> Map.get("description") |> Map.get("captions") |> Enum.count === 3
+    end
+
+    test "describe image with default options" do
+        result = ComputerVision.describe_image(image_url)
+
+        assert elem(result, 0) === :ok
+        test_meta(result)
+        assert result |> elem(1) |> Map.has_key?("description")
+        assert result |> elem(1) |> Map.get("description") |> Map.get("captions") |> Enum.count === 1
+    end
+
+    test "recognize image text with default options" do
+        result = ComputerVision.recognize_character(ocr_image_url)
+
+        assert elem(result, 0) === :ok
+        assert result |> elem(1) |> Map.get("language") === "en"
+        assert result |> elem(1) |> Map.has_key?("regions")
+    end
+
+    test "recognize image text with options" do
+        result = ComputerVision.recognize_character(ocr_image_url, %ComputerVision.OCROptions{detectOrientation: true})
+
+        assert elem(result, 0) === :ok
+        assert result |> elem(1) |> Map.get("language") === "en"
+        assert result |> elem(1) |> Map.has_key?("regions")
+        assert result |> elem(1) |> Map.get("orientation") === "Up"
+    end
+
+    test "tag image" do
+        result = ComputerVision.tag_image(image_url)
+
+        assert elem(result, 0) === :ok
+        test_meta(result)
+        assert result |> elem(1) |> Map.has_key?("tags")
     end
 end

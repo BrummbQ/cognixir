@@ -27,7 +27,7 @@ defmodule Cognixir.TextAnalytics do
     def detect_language(text) when is_binary(text) do
         encoded_body = Poison.encode!(%{"documents" => [%{"id" => 1, "text" => text}]})
 
-        case HTTPotion.post(api_base <> "languages", [body: encoded_body, headers: Cognixir.api_header(api_key)]) do
+        case HTTPotion.post(api_base <> "languages", [body: encoded_body, headers: Cognixir.api_json_header(api_key)]) do
             %HTTPotion.Response{status_code: 200, body: body} ->
                 { :ok, Poison.decode!(body)["documents"] |> hd |> Map.get("detectedLanguages") |> hd }
             %HTTPotion.Response{body: body} ->
@@ -61,7 +61,7 @@ defmodule Cognixir.TextAnalytics do
         end)
         encoded_body = Poison.encode!(%{"documents" => indexed_documents, "stopWords": stop_words, "topicsToExclude": []})
 
-        case HTTPotion.post(api_base <> "topics", [body: encoded_body, headers: Cognixir.api_header(api_key), timeout: 10000]) do
+        case HTTPotion.post(api_base <> "topics", [body: encoded_body, headers: Cognixir.api_json_header(api_key), timeout: 10000]) do
             %HTTPotion.Response{status_code: 202, headers: header} ->
                 { :ok, header["operation-location"] }
             %HTTPotion.Response{body: body} ->
@@ -91,7 +91,7 @@ defmodule Cognixir.TextAnalytics do
     def detect_key_phrases(text, language) do
         encoded_body = Poison.encode!(%{"documents" => [%{"id" => 1, "text" => text, "language" => language}]})
 
-        case HTTPotion.post(api_base <> "keyPhrases", [body: encoded_body, headers: Cognixir.api_header(api_key)]) do
+        case HTTPotion.post(api_base <> "keyPhrases", [body: encoded_body, headers: Cognixir.api_json_header(api_key)]) do
             %HTTPotion.Response{status_code: 200, body: body} ->
                 { :ok, Poison.decode!(body)["documents"] |> hd |> Map.get("keyPhrases") }
             %HTTPotion.Response{body: body} ->
@@ -122,7 +122,7 @@ defmodule Cognixir.TextAnalytics do
     def detect_sentiment(text, language) do
         encoded_body = Poison.encode!(%{"documents" => [%{"id" => 1, "text" => text, "language" => language}]})
 
-        case HTTPotion.post(api_base <> "sentiment", [body: encoded_body, headers: Cognixir.api_header(api_key)]) do
+        case HTTPotion.post(api_base <> "sentiment", [body: encoded_body, headers: Cognixir.api_json_header(api_key)]) do
             %HTTPotion.Response{status_code: 200, body: body} ->
                 { :ok, Poison.decode!(body)["documents"] |> hd |> Map.get("score") }
             %HTTPotion.Response{body: body} ->

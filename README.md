@@ -33,6 +33,8 @@ Add to your config.exs:
 config :Cognixir, ta_api_key: "<your key>"
 # api key for computer vision
 config :Cognixir, cv_api_key: "<your key>"
+# api key for face api
+config :Cognixir, fa_api_key: "<your key>"
 ```
 
 ## Implemented Features
@@ -51,7 +53,13 @@ config :Cognixir, cv_api_key: "<your key>"
  * OCR [x]
  * recognize domain specific content []
  * tag image [x]
- * raw image upload []
+
+### Face Api
+ * face detection [x]
+ * find similar []
+ * group []
+ * identify []
+ * verify []
 
 ## Api Documentation
 

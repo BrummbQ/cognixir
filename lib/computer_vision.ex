@@ -56,7 +56,7 @@ defmodule Cognixir.ComputerVision do
 
     """
     def analyze_image(image, options \\ %ComputerVision.AnalyzeOptions{}) do
-        handle_post(image_url, "analyze", Map.from_struct(options))
+        handle_post(image, "analyze", Map.from_struct(options))
     end
 
     @doc """
@@ -75,7 +75,7 @@ defmodule Cognixir.ComputerVision do
 
     """
     def describe_image(image, max_candidates \\ 1) do
-        handle_post(image_url, "describe", %{maxCandidates: max_candidates})
+        handle_post(image, "describe", %{maxCandidates: max_candidates})
     end
 
     @doc """
@@ -94,7 +94,7 @@ defmodule Cognixir.ComputerVision do
 
     """
     def recognize_character(image, options \\ %ComputerVision.OCROptions{}) do
-        handle_post(image_url, "ocr", Map.from_struct(options))
+        handle_post(image, "ocr", Map.from_struct(options))
     end
 
     @doc """

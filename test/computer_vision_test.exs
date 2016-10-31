@@ -71,8 +71,18 @@ defmodule CognixirTest.ComputerVision do
         assert result |> elem(1) |> Map.get("orientation") === "Up"
     end
 
-    test "tag image" do
+    test "tag image url" do
         result = ComputerVision.tag_image(image_url)
+
+        assert elem(result, 0) === :ok
+        test_meta(result)
+        assert result |> elem(1) |> Map.has_key?("tags")
+    end
+
+    test "tag image raw upload" do
+        file_content = File.read!("test/test.jpg")
+
+        result = ComputerVision.tag_image(file_content)
 
         assert elem(result, 0) === :ok
         test_meta(result)

@@ -45,7 +45,7 @@ defmodule Cognixir.ComputerVision do
 
     ## Parameters
 
-    - image_url: A string containing a valid image url
+    - image: A string containing valid image url or binary file content of an image
     - options: AnalyzeOptions with additional parameters (optional)
 
     ## Examples
@@ -55,19 +55,8 @@ defmodule Cognixir.ComputerVision do
     { :ok, response_map }
 
     """
-    def analyze_image(image_url, options \\ %ComputerVision.AnalyzeOptions{}) do
-        encoded_body = encode_body(image_url)
-
-        case HTTPotion.post(api_base <> "analyze", [query: Map.from_struct(options), body: encoded_body, headers: Cognixir.api_header(api_key)]) do
-            %HTTPotion.Response{status_code: 200, body: body} ->
-                { :ok, Poison.decode!(body) }
-            %HTTPotion.Response{body: body} ->
-                { :error, body }
-            %HTTPotion.ErrorResponse{message: message} ->
-                { :error, message }
-            _ ->
-                { :error, "unknown error" }
-        end
+    def analyze_image(image, options \\ %ComputerVision.AnalyzeOptions{}) do
+        handle_post(image_url, "analyze", Map.from_struct(options))
     end
 
     @doc """
@@ -75,7 +64,7 @@ defmodule Cognixir.ComputerVision do
 
     ## Parameters
 
-    - image_url: A string containing a valid image url
+    - image: A string containing valid image url or binary file content of an image
     - max_candidates: An integer larger then 0
 
     ## Examples
@@ -85,19 +74,8 @@ defmodule Cognixir.ComputerVision do
     { :ok, response_map }
 
     """
-    def describe_image(image_url, max_candidates \\ 1) do
-        encoded_body = encode_body(image_url)
-
-        case HTTPotion.post(api_base <> "describe", [query: %{maxCandidates: max_candidates}, body: encoded_body, headers: Cognixir.api_header(api_key)]) do
-            %HTTPotion.Response{status_code: 200, body: body} ->
-                { :ok, Poison.decode!(body) }
-            %HTTPotion.Response{body: body} ->
-                { :error, body }
-            %HTTPotion.ErrorResponse{message: message} ->
-                { :error, message }
-            _ ->
-                { :error, "unknown error" }
-        end
+    def describe_image(image, max_candidates \\ 1) do
+        handle_post(image_url, "describe", %{maxCandidates: max_candidates})
     end
 
     @doc """
@@ -105,7 +83,7 @@ defmodule Cognixir.ComputerVision do
 
     ## Parameters
 
-    - image_url: A string containing a valid image url
+    - image: A string containing valid image url or binary file content of an image
     - options: AnalyzeOptions with additional parameters (optional)
 
     ## Examples
@@ -115,10 +93,40 @@ defmodule Cognixir.ComputerVision do
     { :ok, response_map }
 
     """
-    def recognize_character(image_url, options \\ %ComputerVision.OCROptions{}) do
+    def recognize_character(image, options \\ %ComputerVision.OCROptions{}) do
+        handle_post(image_url, "ocr", Map.from_struct(options))
+    end
+
+    @doc """
+    Tags an specified image.
+
+    ## Parameters
+
+    - image: A string containing valid image url or binary file content of an image
+
+    ## Examples
+
+    iex> ComputerVision.tag_image("http://example.com/images/test.jpg")
+
+    { :ok, response_map }
+
+    """
+    def tag_image(image) do
+        handle_post(image, "tag")
+    end
+
+    defp handle_post(image, endpoint, query \\ []) do
+        if (String.valid?(image)) do
+            json_post(image, endpoint, query)
+        else
+            binary_post(image, endpoint, query)
+        end
+    end
+
+    defp json_post(image_url, endpoint, query) do
         encoded_body = encode_body(image_url)
 
-        case HTTPotion.post(api_base <> "ocr", [query: Map.from_struct(options), body: encoded_body, headers: Cognixir.api_header(api_key)]) do
+        case HTTPotion.post(api_base <> endpoint, [query: query, body: encoded_body, headers: Cognixir.api_json_header(api_key)]) do
             %HTTPotion.Response{status_code: 200, body: body} ->
                 { :ok, Poison.decode!(body) }
             %HTTPotion.Response{body: body} ->
@@ -130,24 +138,8 @@ defmodule Cognixir.ComputerVision do
         end
     end
 
-    @doc """
-    Tags an specified image.
-
-    ## Parameters
-
-    - image_url: A string containing a valid image url
-
-    ## Examples
-
-    iex> ComputerVision.tag_image("http://example.com/images/test.jpg")
-
-    { :ok, response_map }
-
-    """
-    def tag_image(image_url) do
-        encoded_body = encode_body(image_url)
-
-        case HTTPotion.post(api_base <> "tag", [body: encoded_body, headers: Cognixir.api_header(api_key)]) do
+    defp binary_post(image_file, endpoint, query) do
+        case HTTPotion.post(api_base <> endpoint, [query: query, body: image_file, headers: Cognixir.api_binary_header(api_key)]) do
             %HTTPotion.Response{status_code: 200, body: body} ->
                 { :ok, Poison.decode!(body) }
             %HTTPotion.Response{body: body} ->

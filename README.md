@@ -59,7 +59,7 @@ config :Cognixir, fa_api_key: "<your key>"
  * find similar []
  * group []
  * identify []
- * verify []
+ * verify [x]
 
 ## Api Documentation
 

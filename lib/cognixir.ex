@@ -20,20 +20,15 @@ defmodule Cognixir do
     end
 
     defp json_post(encoded_body, endpoint, key, query) do
-        case HTTPotion.post(endpoint, [query: query, body: encoded_body, headers: Cognixir.api_json_header(key)]) do
-            %HTTPotion.Response{status_code: 200, body: body} ->
-                { :ok, Poison.decode!(body) }
-            %HTTPotion.Response{body: body} ->
-                { :error, body }
-            %HTTPotion.ErrorResponse{message: message} ->
-                { :error, message }
-            _ ->
-                { :error, "unknown error" }
-        end
+        HTTPotion.post(endpoint, [query: query, body: encoded_body, headers: Cognixir.api_json_header(key)]) |> handle_result
     end
 
     defp binary_post(file, endpoint, key, query) do
-        case HTTPotion.post(endpoint, [query: query, body: file, headers: Cognixir.api_binary_header(key)]) do
+        HTTPotion.post(endpoint, [query: query, body: file, headers: Cognixir.api_binary_header(key)]) |> handle_result
+    end
+
+    defp handle_result(http_result) do
+        case http_result do
             %HTTPotion.Response{status_code: 200, body: body} ->
                 { :ok, Poison.decode!(body) }
             %HTTPotion.Response{body: body} ->

@@ -15,7 +15,6 @@ defmodule Cognixir.FaceApi do
     Provides functions for face detection, verification and grouping
     """
     alias Cognixir.FaceApi
-    alias Cognixir.Rest
 
     defp api_base do
         "https://api.projectoxford.ai/face/v1.0/"

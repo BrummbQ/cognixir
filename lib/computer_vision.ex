@@ -35,8 +35,8 @@ defmodule Cognixir.ComputerVision do
         Application.get_env(:Cognixir, :cv_api_key)
     end
 
-    defp encode_body(image_url) do
-        Poison.encode!(%{"url" => image_url})
+    defp encode_body(image) do
+        if String.valid?(image), do: %{"url" => image}, else: image
     end
 
     @doc """
@@ -56,7 +56,7 @@ defmodule Cognixir.ComputerVision do
 
     """
     def analyze_image(image, options \\ %ComputerVision.AnalyzeOptions{}) do
-        handle_post(image, "analyze", Map.from_struct(options))
+        Cognixir.post(encode_body(image), api_base <> "analyze", api_key, Map.from_struct(options))
     end
 
     @doc """
@@ -75,7 +75,7 @@ defmodule Cognixir.ComputerVision do
 
     """
     def describe_image(image, max_candidates \\ 1) do
-        handle_post(image, "describe", %{maxCandidates: max_candidates})
+        Cognixir.post(encode_body(image), api_base <> "describe", api_key, %{maxCandidates: max_candidates})
     end
 
     @doc """
@@ -94,11 +94,11 @@ defmodule Cognixir.ComputerVision do
 
     """
     def recognize_character(image, options \\ %ComputerVision.OCROptions{}) do
-        handle_post(image, "ocr", Map.from_struct(options))
+        Cognixir.post(encode_body(image), api_base <> "ocr", api_key, Map.from_struct(options))
     end
 
     @doc """
-    Tags an specified image.
+    Get tags for an specified image.
 
     ## Parameters
 
@@ -112,42 +112,6 @@ defmodule Cognixir.ComputerVision do
 
     """
     def tag_image(image) do
-        handle_post(image, "tag")
-    end
-
-    defp handle_post(image, endpoint, query \\ []) do
-        if (String.valid?(image)) do
-            json_post(image, endpoint, query)
-        else
-            binary_post(image, endpoint, query)
-        end
-    end
-
-    defp json_post(image_url, endpoint, query) do
-        encoded_body = encode_body(image_url)
-
-        case HTTPotion.post(api_base <> endpoint, [query: query, body: encoded_body, headers: Cognixir.api_json_header(api_key)]) do
-            %HTTPotion.Response{status_code: 200, body: body} ->
-                { :ok, Poison.decode!(body) }
-            %HTTPotion.Response{body: body} ->
-                { :error, body }
-            %HTTPotion.ErrorResponse{message: message} ->
-                { :error, message }
-            _ ->
-                { :error, "unknown error" }
-        end
-    end
-
-    defp binary_post(image_file, endpoint, query) do
-        case HTTPotion.post(api_base <> endpoint, [query: query, body: image_file, headers: Cognixir.api_binary_header(api_key)]) do
-            %HTTPotion.Response{status_code: 200, body: body} ->
-                { :ok, Poison.decode!(body) }
-            %HTTPotion.Response{body: body} ->
-                { :error, body }
-            %HTTPotion.ErrorResponse{message: message} ->
-                { :error, message }
-            _ ->
-                { :error, "unknown error" }
-        end
+        Cognixir.post(encode_body(image), api_base <> "tag", api_key)
     end
 end

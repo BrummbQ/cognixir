@@ -4,7 +4,7 @@ defmodule Cognixir.Mixfile do
 
     def project do
         [app: :Cognixir,
-         version: "0.2.0",
+         version: "0.3.0",
          elixir: "~> 1.3",
          description: description(),
          package: package(),

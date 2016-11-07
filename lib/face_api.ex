@@ -15,6 +15,7 @@ defmodule Cognixir.FaceApi do
     Provides functions for face detection, verification and grouping
     """
     alias Cognixir.FaceApi
+    alias Cognixir.Rest
 
     defp api_base do
         "https://api.projectoxford.ai/face/v1.0/"
@@ -22,10 +23,6 @@ defmodule Cognixir.FaceApi do
 
     defp api_key do
         Application.get_env(:Cognixir, :fa_api_key)
-    end
-
-    defp encode_body(image_url) do
-        Poison.encode!(%{"url" => image_url})
     end
 
     @doc """
@@ -45,42 +42,29 @@ defmodule Cognixir.FaceApi do
 
     """
     def detect_face(image, options \\ %FaceApi.DetectOptions{}) do
-        handle_post(image, "detect", Map.from_struct(options))
+        body = if String.valid?(image), do: %{"url" => image}, else: image
+
+        Cognixir.post(body, api_base <> "detect", api_key, Map.from_struct(options))
     end
 
-    defp handle_post(image, endpoint, query \\ []) do
-        if (String.valid?(image)) do
-            json_post(image, endpoint, query)
-        else
-            binary_post(image, endpoint, query)
-        end
-    end
+    @doc """
+    Checks if two provided faces are identical. First, you need to run detect_face on each face to get a face id, then you can compare both faces
 
-    defp json_post(image_url, endpoint, query) do
-        encoded_body = encode_body(image_url)
+    ## Parameters
 
-        case HTTPotion.post(api_base <> endpoint, [query: query, body: encoded_body, headers: Cognixir.api_json_header(api_key)]) do
-            %HTTPotion.Response{status_code: 200, body: body} ->
-                { :ok, Poison.decode!(body) }
-            %HTTPotion.Response{body: body} ->
-                { :error, body }
-            %HTTPotion.ErrorResponse{message: message} ->
-                { :error, message }
-            _ ->
-                { :error, "unknown error" }
-        end
-    end
+    - face_id_1: face id of first face
+    - face_id_2: face id of second face
 
-    defp binary_post(image_file, endpoint, query) do
-        case HTTPotion.post(api_base <> endpoint, [query: query, body: image_file, headers: Cognixir.api_binary_header(api_key)]) do
-            %HTTPotion.Response{status_code: 200, body: body} ->
-                { :ok, Poison.decode!(body) }
-            %HTTPotion.Response{body: body} ->
-                { :error, body }
-            %HTTPotion.ErrorResponse{message: message} ->
-                { :error, message }
-            _ ->
-                { :error, "unknown error" }
-        end
+    ## Examples
+
+    iex> ComputerVision.verify_faces("id_1", "id_2")
+
+    { :ok, %{"isIdentical" => false, "confidence" => 0.0} }
+
+    """
+    def verify_faces(face_id_1, face_id_2) do
+        body = %{"faceId1" => face_id_1, "faceId2" => face_id_2}
+
+        Cognixir.post(body, api_base <> "verify", api_key)
     end
 end

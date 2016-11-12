@@ -64,3 +64,7 @@ config :cognixir, fa_api_key: "<your key>"
 ## Api Documentation
 
 You can find the api documentation for published packages on [Hex Doc](https://hexdocs.pm/cognixir/api-reference.html)
+
+## Demo Application & Usage
+
+If you want to see this api in action, check out [CognixirDemo](https://github.com/BrummbQ/cognixir-demo). That application tries to illustrate the main features and usage of this library. For api examples you might also have a look in the tests directory.

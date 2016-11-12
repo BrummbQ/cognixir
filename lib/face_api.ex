@@ -21,7 +21,7 @@ defmodule Cognixir.FaceApi do
     end
 
     defp api_key do
-        Application.get_env(:Cognixir, :fa_api_key)
+        Application.get_env(:cognixir, :fa_api_key)
     end
 
     @doc """

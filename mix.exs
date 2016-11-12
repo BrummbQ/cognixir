@@ -3,8 +3,8 @@ defmodule Cognixir.Mixfile do
     use Mix.Config
 
     def project do
-        [app: :Cognixir,
-         version: "0.3.0",
+        [app: :cognixir,
+         version: "0.4.0",
          elixir: "~> 1.3",
          description: description(),
          package: package(),

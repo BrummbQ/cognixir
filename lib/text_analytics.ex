@@ -8,7 +8,7 @@ defmodule Cognixir.TextAnalytics do
     end
 
     defp api_key do
-        Application.get_env(:Cognixir, :ta_api_key)
+        Application.get_env(:cognixir, :ta_api_key)
     end
 
     @doc """

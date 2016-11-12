@@ -32,7 +32,7 @@ defmodule Cognixir.ComputerVision do
     end
 
     defp api_key do
-        Application.get_env(:Cognixir, :cv_api_key)
+        Application.get_env(:cognixir, :cv_api_key)
     end
 
     defp encode_body(image) do

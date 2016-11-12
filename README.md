@@ -4,13 +4,13 @@
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
+The package can be installed as:
 
   1. Add `Cognixir` to your list of dependencies in `mix.exs`:
 
     ```elixir
     def deps do
-      [{:Cognixir, "~> 0.1.0"}]
+      [{:cognixir, "~> 0.4.0"}]
     end
     ```
 
@@ -18,23 +18,23 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
 
     ```elixir
     def application do
-      [applications: [:Cognixir]]
+      [applications: [:cognixir]]
     end
     ```
 
 ## Configuration
 
-You need a subscription key to access the different cognitive service api. Head over to https://www.microsoft.com/cognitive-service, create an account and fetch your api key. You can get started with a free subscription.
+You need a subscription key to access the different cognitive service api. Head over to https://www.microsoft.com/cognitive-services, create an account and fetch your api key. You can get started with a free subscription.
 
 Add to your config.exs:
 
 ```elixir
 # api key for text analytics
-config :Cognixir, ta_api_key: "<your key>"
+config :cognixir, ta_api_key: "<your key>"
 # api key for computer vision
-config :Cognixir, cv_api_key: "<your key>"
+config :cognixir, cv_api_key: "<your key>"
 # api key for face api
-config :Cognixir, fa_api_key: "<your key>"
+config :cognixir, fa_api_key: "<your key>"
 ```
 
 ## Implemented Features
